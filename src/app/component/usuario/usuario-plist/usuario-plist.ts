@@ -1,6 +1,7 @@
 ﻿import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { IPage } from '../../../model/plist';
 import { IUsuario } from '../../../model/usuario';
 import { UsuarioService } from '../../../service/usuarioService';
@@ -8,7 +9,7 @@ import { UsuarioSharedModule } from './usuario-shared.module';
 
 @Component({
   selector: 'app-usuario-plist',
-  imports: [CommonModule, UsuarioSharedModule],
+  imports: [CommonModule, RouterModule, UsuarioSharedModule],
   templateUrl: './usuario-plist.html',
   styleUrl: './usuario-plist.css',
   standalone: true

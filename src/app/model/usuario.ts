@@ -46,6 +46,8 @@ export interface IUsuario {
   rolusuario?: IUsuarioRelacion | null;
   club?: IClub | null;
   equipo?: IEquipo | null;
+  equipos?: number;   // total equipos relacionados (si el backend lo expone)
+  jugadores?: number; // total jugadores relacionados (si el backend lo expone)
   comentarios: number;
   puntuaciones: number;
   compras?: number;

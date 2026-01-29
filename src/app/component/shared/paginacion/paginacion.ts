@@ -3,7 +3,7 @@ import { neighborhood } from '../../../environment/environment';
 
 @Component({
   selector: 'app-paginacion',
-  imports: [],
+  standalone: false,
   templateUrl: './paginacion.html',
   styleUrl: './paginacion.css',
 })
