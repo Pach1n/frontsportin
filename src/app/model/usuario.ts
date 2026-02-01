@@ -20,4 +20,6 @@ export interface IUsuario {
   comentarioarts: number;
   carritos: number;
   facturas: number;
+  equiposentrenados: number;
+  jugadores: number;
 }

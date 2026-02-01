@@ -4,5 +4,8 @@ import { UsuarioPlist } from './component/usuario/usuario-plist/usuario-plist';
 
 export const routes: Routes = [
     { path: '', component: Home },
-    { path: 'usuario/plist', component: UsuarioPlist },
+    { path: 'usuario', component: UsuarioPlist },
+    { path: 'usuario/tipousuario/:tipousuario', component: UsuarioPlist },
+    { path: 'usuario/rol/:rol', component: UsuarioPlist },
+    { path: 'usuario/club/:club', component: UsuarioPlist },
 ];
