@@ -3,7 +3,7 @@ import { rpp } from '../../../environment/environment';
 
 @Component({
     selector: 'app-botonera-rpp',
-    imports: [],
+    standalone: false,
     templateUrl: './botonera-rpp.html',
     styleUrl: './botonera-rpp.css',
 })

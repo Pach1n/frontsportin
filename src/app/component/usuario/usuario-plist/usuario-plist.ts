@@ -20,6 +20,8 @@ export class UsuarioPlist implements OnInit, OnDestroy {
   numPage: number = 0;
   numRpp: number = 10;
   filtro: string = '';
+  orderField: string = 'id';
+  orderDir: 'asc' | 'desc' = 'asc';
   isLoading: boolean = false;
   isFilling: boolean = false;
   errorMessage: string = '';
@@ -157,6 +159,23 @@ export class UsuarioPlist implements OnInit, OnDestroy {
 
   trackById(index: number, usuario: IUsuario) {
     return usuario.id;
+  }
+
+  setOrder(field: string) {
+    if (this.orderField === field) {
+      this.orderDir = this.orderDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.orderField = field;
+      this.orderDir = 'asc';
+    }
+    this.getPage();
+  }
+
+  sortIcon(field: string) {
+    if (this.orderField !== field) {
+      return 'bi bi-arrow-down-up';
+    }
+    return this.orderDir === 'asc' ? 'bi bi-arrow-up-short' : 'bi bi-arrow-down-short';
   }
 
   getGeneroLabel(genero: number) {

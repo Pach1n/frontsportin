@@ -1,4 +1,4 @@
-﻿.usuario-plist .header-inline {
+.usuario-plist .header-inline {
   display: inline-flex;
   align-items: center;
 }
@@ -10,4 +10,9 @@
 .usuario-plist .table td,
 .usuario-plist .table th {
   vertical-align: middle;
+}
+
+.usuario-plist .btn-link {
+  text-decoration: none;
+  font-weight: 600;
 }

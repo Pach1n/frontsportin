@@ -8,4 +8,5 @@ export const routes: Routes = [
     { path: 'usuario/tipousuario/:tipousuario', component: UsuarioPlist },
     { path: 'usuario/rol/:rol', component: UsuarioPlist },
     { path: 'usuario/club/:club', component: UsuarioPlist },
+    { path: 'usuario?:id_tipousuario', component: UsuarioPlist }, // pte filtro
 ];
