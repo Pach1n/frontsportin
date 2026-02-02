@@ -78,8 +78,8 @@ export class CarritoPlistAdminRouted {
 
     this.carritoService
       .getPage(
-        0, // siempre cargamos desde la primera página
-        1000, // lote grande para filtrar en cliente
+        this.numPage(),
+        this.numRpp(),
         this.orderField(),
         this.orderDirection(),
         this.filtro().trim(),
@@ -88,39 +88,7 @@ export class CarritoPlistAdminRouted {
       )
       .subscribe({
         next: (data: IPage<ICarrito>) => {
-          const filtered = data.content.filter((c) => {
-            const byArticulo = this.idArticulo() === 0 || c.articulo?.id === this.idArticulo();
-            const byUsuario = this.idUsuario() === 0 || c.usuario?.id === this.idUsuario();
-            const bySearch =
-              this.filtro().trim().length === 0 ||
-              c.articulo?.descripcion?.toLowerCase().includes(this.filtro().trim().toLowerCase()) ||
-              `${c.usuario?.nombre} ${c.usuario?.apellido1} ${c.usuario?.apellido2}`
-                .toLowerCase()
-                .includes(this.filtro().trim().toLowerCase());
-            return byArticulo && byUsuario && bySearch;
-          });
-
-          const totalElements = filtered.length;
-          const totalPages = Math.max(Math.ceil(totalElements / this.numRpp()), 1);
-          const safePage = Math.min(this.numPage(), totalPages - 1);
-          const pagedContent = filtered.slice(
-            safePage * this.numRpp(),
-            safePage * this.numRpp() + this.numRpp()
-          );
-
-          this.numPage.set(safePage);
-
-          this.oPage.set({
-            ...data,
-            content: pagedContent,
-            totalElements,
-            totalPages,
-            number: safePage,
-            size: this.numRpp(),
-            numberOfElements: pagedContent.length,
-            first: safePage === 0,
-            last: safePage === totalPages - 1,
-          });
+          this.oPage.set(data);
 
           if (this.numPage() > 0 && this.numPage() >= (data.totalPages ?? 0)) {
             this.numPage.set(Math.max((data.totalPages ?? 1) - 1, 0));

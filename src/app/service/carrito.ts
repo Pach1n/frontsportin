@@ -17,8 +17,8 @@ export class CarritoService {
     order: string = '',
     direction: string = '',
     filter: string = '',
-    _idArticulo: number = 0,
-    _idUsuario: number = 0
+    idArticulo: number = 0,
+    idUsuario: number = 0
   ): Observable<IPage<ICarrito>> {
     if (order === '') {
       order = 'id';
@@ -29,11 +29,18 @@ export class CarritoService {
 
     let url = `${serverURL}/carrito?page=${page}&size=${rpp}&sort=${order},${direction}`;
 
+    if (idArticulo > 0) {
+      url += `&id_articulo=${idArticulo}`;
+    }
+
+    if (idUsuario > 0) {
+      url += `&id_usuario=${idUsuario}`;
+    }
+
     if (filter && filter.length > 0) {
       url += `&filter=${encodeURIComponent(filter)}`;
     }
 
-    // Nota: el backend no filtra por idArticulo/idUsuario; filtramos en cliente.
     return this.oHttp.get<IPage<ICarrito>>(url);
   }
 }
