@@ -2,23 +2,23 @@ import { Component, signal, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { EquipoService } from '../../../service/equipo';
-import { IEquipo } from '../../../model/equipo';
 import { DatetimePipe } from '../../../pipe/datetime-pipe';
+import { UsuarioService } from '../../../service/usuario';
+import { IUsuario } from '../../../model/usuario';
 
 
 @Component({
-  selector: 'app-equipo-view',
+  selector: 'app-usuario-view',
   imports: [CommonModule, RouterLink, DatetimePipe],
-  templateUrl: './equipo-view.html',
-  styleUrl: './equipo-view.css',
+  templateUrl: './usuario-view.html',
+  styleUrl: './usuario-view.css',
 })
-export class EquipoViewRouted implements OnInit {
+export class UsuarioViewAdminRouted implements OnInit {
   private route = inject(ActivatedRoute);
-  private oEquipoService = inject(EquipoService);
+  private oUsuarioService = inject(UsuarioService);
   //private snackBar = inject(MatSnackBar);
 
-  oEquipo = signal<IEquipo | null>(null);
+  oUsuario = signal<IUsuario | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
 
@@ -34,15 +34,15 @@ export class EquipoViewRouted implements OnInit {
   }
 
   load(id: number) {
-    this.oEquipoService.get(id).subscribe({
-      next: (data: IEquipo) => {
-        this.oEquipo.set(data);
+    this.oUsuarioService.get(id).subscribe({
+      next: (data: IUsuario) => {
+        this.oUsuario.set(data);
         this.loading.set(false);
       },
       error: (err: HttpErrorResponse) => {
-        this.error.set('Error cargando el equipo');
+        this.error.set('Error cargando el usuario');
         this.loading.set(false);
-        //this.snackBar.open('Error cargando el equipo', 'Cerrar', { duration: 4000 });
+        //this.snackBar.open('Error cargando el usuario', 'Cerrar', { duration: 4000 });
         console.error(err);
       },
     });

@@ -2,7 +2,7 @@ import { Component, signal, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { JugadorService } from '../../../service/jugador-service';
+import { JugadorService } from '../../../service/jugador';
 import { IJugador } from '../../../model/jugador';
 import { serverURL } from '../../../environment/environment';
 
@@ -12,7 +12,7 @@ import { serverURL } from '../../../environment/environment';
   templateUrl: './jugador-view.html',
   styleUrls: ['./jugador-view.css'],
 })
-export class JugadorViewRouted implements OnInit {
+export class JugadorViewAdminRouted implements OnInit {
 
   private route = inject(ActivatedRoute);
   private jugadorService = inject(JugadorService);

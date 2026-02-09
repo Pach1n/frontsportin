@@ -12,7 +12,7 @@ import { ICompra } from '../../../model/compra';
   templateUrl: './compra-view.html',
   styleUrl: './compra-view.css',
 })
-export class CompraViewRouted implements OnInit {
+export class CompraViewAdminRouted implements OnInit {
   private route = inject(ActivatedRoute);
   private compraService = inject(CompraService);
 

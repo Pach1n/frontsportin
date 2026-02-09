@@ -12,7 +12,7 @@ import { DatetimePipe } from '../../../pipe/datetime-pipe';
   templateUrl: './comentarioart-view.html',
   styleUrl: './comentarioart-view.css',
 })
-export class ComentarioartViewRouted implements OnInit {
+export class ComentarioartViewAdminRouted implements OnInit {
   private route = inject(ActivatedRoute);
   private oComentarioartService = inject(ComentarioartService);
 

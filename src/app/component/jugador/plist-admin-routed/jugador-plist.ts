@@ -2,7 +2,7 @@ import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Paginacion } from '../../shared/paginacion/paginacion';
 import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
-import { JugadorService } from '../../../service/jugador-service';
+import { JugadorService } from '../../../service/jugador';
 import { IJugador } from '../../../model/jugador';
 import { IPage } from '../../../model/plist';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -25,7 +25,7 @@ import { debounceTimeSearch, serverURL } from '../../../environment/environment'
     TrimPipe
   ]
 })
-export class JugadorPlisComponent {
+export class JugadorPlistAdminRouted {
 
   oPage = signal<IPage<IJugador> | null>(null);
   numPage = signal<number>(0);

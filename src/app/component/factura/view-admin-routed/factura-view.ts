@@ -3,7 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { DatetimePipe } from '../../../pipe/datetime-pipe';
-import { FacturaService } from '../../../service/factura-service';
+import { FacturaService } from '../../../service/factura';
 import { IFactura } from '../../../model/factura';
 
 

@@ -11,7 +11,7 @@ import { IComentario } from '../../../model/comentario';
 	templateUrl: './comentario-view.html',
 	styleUrl: './comentario-view.css',
 })
-export class ComentarioViewRouted implements OnInit {
+export class ComentarioViewAdminRouted implements OnInit {
 	private route = inject(ActivatedRoute);
 	private oComentarioService = inject(ComentarioService);
 

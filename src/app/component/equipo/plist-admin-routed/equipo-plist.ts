@@ -1,32 +1,27 @@
 import { Component, signal, computed } from '@angular/core';
-import { ITemporada } from '../../../model/temporada';
-import { IPage } from '../../../model/plist';
-import { TemporadaService } from '../../../service/temporada';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Paginacion } from '../../shared/paginacion/paginacion';
 import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
 import { TrimPipe } from '../../../pipe/trim-pipe';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+import { EquipoService } from '../../../service/equipo';
 import { debounceTimeSearch } from '../../../environment/environment';
+import { IPage } from '../../../model/plist';
+import { IEquipo } from '../../../model/equipo';
 
 @Component({
-  selector: 'app-temporada-plist',
+  selector: 'app-plist-equipo',
   imports: [Paginacion, BotoneraRpp, TrimPipe, RouterLink],
-  templateUrl: './temporada-plist.html',
-  styleUrl: './temporada-plist.css',
+  templateUrl: './equipo-plist.html',
+  styleUrl: './equipo-plist.css',
 })
-export class TemporadaPlist {
-  oPage = signal<IPage<ITemporada> | null>(null);
+export class EquipoPlistAdminRouted {
+  oPage = signal<IPage<IEquipo> | null>(null);
   numPage = signal<number>(0);
   numRpp = signal<number>(5);
-  rellenaCantidad = signal<number>(10);
-  rellenando = signal<boolean>(false);
-  rellenaOk = signal<number | null>(null);
-  rellenaError = signal<string | null>(null);
-  publishingId = signal<number | null>(null);
-  publishingAction = signal<'publicar' | 'despublicar' | null>(null);
 
   // Mensajes y total
   message = signal<string | null>(null);
@@ -38,49 +33,43 @@ export class TemporadaPlist {
   orderDirection = signal<'asc' | 'desc'>('asc');
 
   // Variables de filtro
-  club = signal<number>(0);
+  categoria = signal<number>(0);
+  usuario = signal<number>(0);
 
   // Variables de búsqueda
-  descripcion = signal<string>('');
+  nombre = signal<string>('');
   private searchSubject = new Subject<string>();
   private searchSubscription?: Subscription;
 
   constructor(
-    private oTemporadaService: TemporadaService,
+    private oEquipoService: EquipoService,
     private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id_club');
-      if (id) {
-        this.club.set(+id);
-      } else {
-        this.club.set(0);
-      }
-      this.numPage.set(0);
-      this.getPage();
-    });
+    const id = this.route.snapshot.paramMap.get('id_categoria');
+    if (id) {
+      this.categoria.set(+id);
+    }
 
-    this.route.queryParamMap.subscribe((params) => {
-      const msg = params.get('msg');
-      if (msg) {
-        this.showMessage(msg);
-      }
-    });
+    const idUsuario = this.route.snapshot.paramMap.get('id_usuario');
+    if (idUsuario) {
+      this.usuario.set(+idUsuario);
+    }
 
     // Configurar el debounce para la búsqueda
     this.searchSubscription = this.searchSubject
       .pipe(
-        debounceTime(debounceTimeSearch), // Espera 800ms después de que el usuario deje de escribir
+        debounceTime(debounceTimeSearch), // Espera después de que el usuario deje de escribir
         distinctUntilChanged(), // Solo emite si el valor cambió
       )
       .subscribe((searchTerm: string) => {
-        this.descripcion.set(searchTerm);
+        this.nombre.set(searchTerm);
         this.numPage.set(0);
         this.getPage();
       });
 
+    this.getPage();
   }
 
   ngOnDestroy() {
@@ -90,29 +79,19 @@ export class TemporadaPlist {
     }
   }
 
-  private showMessage(msg: string, duration: number = 4000) {
-    this.message.set(msg);
-    if (this.messageTimeout) {
-      clearTimeout(this.messageTimeout);
-    }
-    this.messageTimeout = setTimeout(() => {
-      this.message.set(null);
-      this.messageTimeout = null;
-    }, duration);
-  }
-
   getPage() {
-    this.oTemporadaService
+    this.oEquipoService
       .getPage(
         this.numPage(),
         this.numRpp(),
         this.orderField(),
         this.orderDirection(),
-        this.descripcion(),
-        this.club(),
+        this.nombre(),
+        this.categoria(),
+        this.usuario()
       )
       .subscribe({
-        next: (data: IPage<ITemporada>) => {
+        next: (data: IPage<IEquipo>) => {
           this.oPage.set(data);
           if (this.numPage() > 0 && this.numPage() >= data.totalPages) {
             this.numPage.set(data.totalPages - 1);
@@ -147,11 +126,7 @@ export class TemporadaPlist {
     this.getPage();
   }
 
-  onCantidadChange(value: string) {
-    this.rellenaCantidad.set(+value);
-  }
-
-  onSearchDescription(value: string) {
+  onSearchNombre(value: string) {
     // Emitir el valor al Subject para que sea procesado con debounce
     this.searchSubject.next(value);
   }

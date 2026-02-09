@@ -30,7 +30,6 @@ export class LigaEditAdminRouted implements OnInit {
       id: [{ value: '', disabled: true }],
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       id_equipo: ['', [Validators.required, Validators.min(1)]],
-      partidos: [{ value: 0, disabled: true }],
     });
   }
 
@@ -50,11 +49,16 @@ export class LigaEditAdminRouted implements OnInit {
   getOne() {
     this.oLigaService.get(this.id).subscribe({
       next: (data: ILiga) => {
+        const equipoValue = data.equipo as unknown;
+        const equipoId =
+          typeof equipoValue === 'number'
+            ? equipoValue
+            : (equipoValue as IEquipo | undefined)?.id ?? '';
+
         this.oLigaForm?.patchValue({
           id: data.id,
           nombre: data.nombre,
-          id_equipo: data.equipo?.id ?? '',
-          partidos: data.partidos ?? 0,
+          id_equipo: equipoId,
         });
         this.loading.set(false);
       },
@@ -73,10 +77,18 @@ export class LigaEditAdminRouted implements OnInit {
     }
 
     const raw = this.oLigaForm?.getRawValue();
-    const ligaToUpdate: Partial<ILiga> = {
+    if (!raw) {
+      this.snackBar.open('No se pudo leer el formulario', 'Cerrar');
+      return;
+    }
+
+    const nombre = String(raw.nombre ?? '').trim();
+    const idEquipo = Number(raw.id_equipo);
+
+    const ligaToUpdate: Pick<ILiga, 'id' | 'nombre' | 'equipo'> = {
       id: this.id,
-      nombre: raw.nombre,
-      equipo: { id: Number(raw.id_equipo) } as IEquipo,
+      nombre,
+      equipo: { id: idEquipo } as IEquipo,
     };
 
     this.oLigaService.update(ligaToUpdate).subscribe({

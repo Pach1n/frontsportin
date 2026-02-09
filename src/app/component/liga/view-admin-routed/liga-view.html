@@ -1,0 +1,9 @@
+@if (!error()) {
+  <app-liga-detail-unrouted [id]="id_liga"></app-liga-detail-unrouted>
+} @else {
+  <div class="container py-3">
+    <div class="alert alert-danger text-center mb-0">
+      {{ error() }}
+    </div>
+  </div>
+}

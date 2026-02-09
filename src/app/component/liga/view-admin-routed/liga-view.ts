@@ -9,7 +9,7 @@ import { LigaDetailAdminUnrouted } from '../detail-admin-unrouted/liga-detail';
   templateUrl: './liga-view.html',
   styleUrl: './liga-view.css',
 })
-export class LigaViewRouted implements OnInit {
+export class LigaViewAdminRouted implements OnInit {
   private route = inject(ActivatedRoute);
 
   id_liga = signal<number>(0);

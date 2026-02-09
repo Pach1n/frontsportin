@@ -7,7 +7,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { IPage } from '../../../model/plist';
 import { IUsuario } from '../../../model/usuario';
-import { UsuarioService } from '../../../service/usuarioService';
+import { UsuarioService } from '../../../service/usuario';
 
 import { Paginacion } from '../../shared/paginacion/paginacion';
 import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
@@ -20,7 +20,7 @@ import { debounceTimeSearch } from '../../../environment/environment';
   templateUrl: './usuario-plist.html',
   styleUrl: './usuario-plist.css',
 })
-export class UsuarioPlist {
+export class UsuarioPlistAdminRouted {
   oPage = signal<IPage<IUsuario> | null>(null);
   numPage = signal<number>(0);
   numRpp = signal<number>(10);

@@ -1,14 +1,18 @@
-<app-liga-detail-unrouted [id]="id_liga"></app-liga-detail-unrouted>
+@if (!error()) {
+  <app-liga-detail-unrouted [id]="id_liga"></app-liga-detail-unrouted>
 
-<h3 class="text-center">Confirma que desea eliminar esta liga?</h3>
-@if ((oLiga()?.partidos ?? 0) > 0) {
-  <p class="text-center text-danger fw-semibold">
-    No se puede eliminar: esta liga tiene {{ oLiga()?.partidos }} partido(s) asociado(s).
-  </p>
+  <h3 class="text-center">Confirma que desea eliminar esta liga?</h3>
+  <div class="text-center">
+    <button class="btn btn-danger mx-2" (click)="doDelete()">Eliminar</button>
+    <button class="btn btn-secondary mx-2" (click)="doCancel()">Volver</button>
+  </div>
+} @else {
+  <div class="container py-3">
+    <div class="alert alert-danger text-center">
+      {{ error() }}
+    </div>
+    <div class="text-center">
+      <button class="btn btn-secondary mx-2" (click)="doCancel()">Volver</button>
+    </div>
+  </div>
 }
-<div class="text-center">
-  <button class="btn btn-danger mx-2" (click)="doDelete()" [disabled]="loading() || (oLiga()?.partidos ?? 0) > 0">
-    Eliminar
-  </button>
-  <button class="btn btn-secondary mx-2" (click)="doCancel()">Volver</button>
-</div>

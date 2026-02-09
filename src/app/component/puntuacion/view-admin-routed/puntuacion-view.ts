@@ -13,7 +13,7 @@ import { DatetimePipe } from '../../../pipe/datetime-pipe';
   templateUrl: './puntuacion-view.html',
   styleUrls: ['./puntuacion-view.css'],
 })
-export class PuntuacionViewRouted implements OnInit {
+export class PuntuacionViewAdminRouted implements OnInit {
   private route = inject(ActivatedRoute);
   private oPuntuacionService = inject(PuntuacionService);
 

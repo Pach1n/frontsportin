@@ -1,27 +1,32 @@
 import { Component, signal, computed } from '@angular/core';
+import { ITemporada } from '../../../model/temporada';
+import { IPage } from '../../../model/plist';
+import { TemporadaService } from '../../../service/temporada';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Paginacion } from '../../shared/paginacion/paginacion';
+import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
+import { TrimPipe } from '../../../pipe/trim-pipe';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Paginacion } from '../shared/paginacion/paginacion';
-import { BotoneraRpp } from '../shared/botonera-rpp/botonera-rpp';
-import { TrimPipe } from '../../pipe/trim-pipe';
-
-import { EquipoService } from '../../service/equipo';
-import { debounceTimeSearch } from '../../environment/environment';
-import { IPage } from '../../model/plist';
-import { IEquipo } from '../../model/equipo';
+import { debounceTimeSearch } from '../../../environment/environment';
 
 @Component({
-  selector: 'app-plist-equipo',
+  selector: 'app-temporada-plist',
   imports: [Paginacion, BotoneraRpp, TrimPipe, RouterLink],
-  templateUrl: './equipo-plist.html',
-  styleUrl: './equipo-plist.css',
+  templateUrl: './temporada-plist.html',
+  styleUrl: './temporada-plist.css',
 })
-export class PlistEquipo {
-  oPage = signal<IPage<IEquipo> | null>(null);
+export class TemporadaPlistAdminRouted {
+  oPage = signal<IPage<ITemporada> | null>(null);
   numPage = signal<number>(0);
   numRpp = signal<number>(5);
+  rellenaCantidad = signal<number>(10);
+  rellenando = signal<boolean>(false);
+  rellenaOk = signal<number | null>(null);
+  rellenaError = signal<string | null>(null);
+  publishingId = signal<number | null>(null);
+  publishingAction = signal<'publicar' | 'despublicar' | null>(null);
 
   // Mensajes y total
   message = signal<string | null>(null);
@@ -33,43 +38,49 @@ export class PlistEquipo {
   orderDirection = signal<'asc' | 'desc'>('asc');
 
   // Variables de filtro
-  categoria = signal<number>(0);
-  usuario = signal<number>(0);
+  club = signal<number>(0);
 
   // Variables de búsqueda
-  nombre = signal<string>('');
+  descripcion = signal<string>('');
   private searchSubject = new Subject<string>();
   private searchSubscription?: Subscription;
 
   constructor(
-    private oEquipoService: EquipoService,
+    private oTemporadaService: TemporadaService,
     private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id_categoria');
-    if (id) {
-      this.categoria.set(+id);
-    }
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('id_club');
+      if (id) {
+        this.club.set(+id);
+      } else {
+        this.club.set(0);
+      }
+      this.numPage.set(0);
+      this.getPage();
+    });
 
-    const idUsuario = this.route.snapshot.paramMap.get('id_usuario');
-    if (idUsuario) {
-      this.usuario.set(+idUsuario);
-    }
+    this.route.queryParamMap.subscribe((params) => {
+      const msg = params.get('msg');
+      if (msg) {
+        this.showMessage(msg);
+      }
+    });
 
     // Configurar el debounce para la búsqueda
     this.searchSubscription = this.searchSubject
       .pipe(
-        debounceTime(debounceTimeSearch), // Espera después de que el usuario deje de escribir
+        debounceTime(debounceTimeSearch), // Espera 800ms después de que el usuario deje de escribir
         distinctUntilChanged(), // Solo emite si el valor cambió
       )
       .subscribe((searchTerm: string) => {
-        this.nombre.set(searchTerm);
+        this.descripcion.set(searchTerm);
         this.numPage.set(0);
         this.getPage();
       });
 
-    this.getPage();
   }
 
   ngOnDestroy() {
@@ -79,19 +90,29 @@ export class PlistEquipo {
     }
   }
 
+  private showMessage(msg: string, duration: number = 4000) {
+    this.message.set(msg);
+    if (this.messageTimeout) {
+      clearTimeout(this.messageTimeout);
+    }
+    this.messageTimeout = setTimeout(() => {
+      this.message.set(null);
+      this.messageTimeout = null;
+    }, duration);
+  }
+
   getPage() {
-    this.oEquipoService
+    this.oTemporadaService
       .getPage(
         this.numPage(),
         this.numRpp(),
         this.orderField(),
         this.orderDirection(),
-        this.nombre(),
-        this.categoria(),
-        this.usuario()
+        this.descripcion(),
+        this.club(),
       )
       .subscribe({
-        next: (data: IPage<IEquipo>) => {
+        next: (data: IPage<ITemporada>) => {
           this.oPage.set(data);
           if (this.numPage() > 0 && this.numPage() >= data.totalPages) {
             this.numPage.set(data.totalPages - 1);
@@ -126,7 +147,11 @@ export class PlistEquipo {
     this.getPage();
   }
 
-  onSearchNombre(value: string) {
+  onCantidadChange(value: string) {
+    this.rellenaCantidad.set(+value);
+  }
+
+  onSearchDescription(value: string) {
     // Emitir el valor al Subject para que sea procesado con debounce
     this.searchSubject.next(value);
   }

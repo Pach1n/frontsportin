@@ -6,7 +6,7 @@ import { Paginacion } from '../../shared/paginacion/paginacion';
 import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
 import { DatetimePipe } from '../../../pipe/datetime-pipe';
 import { IPage } from '../../../model/plist';
-import { FacturaService } from '../../../service/factura-service';
+import { FacturaService } from '../../../service/factura';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TrimPipe } from '../../../pipe/trim-pipe';
 import { IFactura } from '../../../model/factura';
